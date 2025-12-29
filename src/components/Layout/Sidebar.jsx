@@ -18,6 +18,22 @@ function Sidebar() {
           </div>
         </div>
       </div>
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+        <div className="p-4 border-t border-slate-200/50 dark:border-slate-700/50">
+          <div className="flex items-center space-x-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+            <img
+              src=""
+              all="user"
+              className="w-10 h-10 rounded-full ring-2 ring-blue-500"
+            />
+            <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium">Alex Johnson</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
     </div>
   );
 }
