@@ -60,7 +60,7 @@ function Header() {
           </button>
           <div className="flex items-center space-x-3 pl-3 border-l border-slate-200 dark:border-slate-700">
             <img
-              src=""
+              src="https://i.pravatar.cc/100"
               alt="User"
               className="w-8 h-8 rounded-full ring-2 ring-blue-500"
             />
