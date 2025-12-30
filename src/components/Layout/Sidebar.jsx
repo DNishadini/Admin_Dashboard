@@ -15,12 +15,7 @@ import {
 } from "lucide-react";
 
 const menuItems = [
-  {
-    id: "dashboard",
-    icon: LayoutDashboard,
-    label: "Dashboard",
-    badge: "New",
-  },
+  { id: "dashboard", icon: LayoutDashboard, label: "Dashboard", badge: "New" },
   {
     id: "analytics",
     icon: BarChart3,
@@ -52,38 +47,12 @@ const menuItems = [
       { id: "customers", label: "Customers" },
     ],
   },
-  {
-    id: "inventory",
-    icon: Package,
-    label: "Inventory",
-    count: "847",
-  },
-  {
-    id: "transactions",
-    icon: CreditCard,
-    label: "Transactions",
-  },
-  {
-    id: "messages",
-    icon: MessageSquare,
-    label: "Messages",
-    badge: "12",
-  },
-  {
-    id: "calendar",
-    icon: Calendar,
-    label: "Calendar",
-  },
-  {
-    id: "reports",
-    icon: FileText,
-    label: "Reports",
-  },
-  {
-    id: "settings",
-    icon: Settings,
-    label: "Settings",
-  },
+  { id: "inventory", icon: Package, label: "Inventory", count: "847" },
+  { id: "transactions", icon: CreditCard, label: "Transactions" },
+  { id: "messages", icon: MessageSquare, label: "Messages", badge: "12" },
+  { id: "calendar", icon: Calendar, label: "Calendar" },
+  { id: "reports", icon: FileText, label: "Reports" },
+  { id: "settings", icon: Settings, label: "Settings" },
 ];
 
 function Sidebar({ collapsed, onToggle, currentPage, onPageChange }) {
@@ -91,11 +60,20 @@ function Sidebar({ collapsed, onToggle, currentPage, onPageChange }) {
 
   const handleMenuClick = (item) => {
     if (item.submenu) {
+      // open / close submenu only
       setOpenMenu(openMenu === item.id ? null : item.id);
     } else {
+      // navigate + collapse sidebar
       onPageChange(item.id);
+      onToggle(); // ✅ COLLAPSE SIDEBAR
       setOpenMenu(null);
     }
+  };
+
+  const handleSubmenuClick = (subId) => {
+    onPageChange(subId);
+    onToggle(); // ✅ COLLAPSE SIDEBAR
+    setOpenMenu(null);
   };
 
   return (
@@ -127,7 +105,7 @@ function Sidebar({ collapsed, onToggle, currentPage, onPageChange }) {
         </div>
       </div>
 
-      {/* NAVIGATION */}
+      {/* NAV */}
       <nav className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-1">
           {menuItems.map((item) => {
@@ -144,27 +122,14 @@ function Sidebar({ collapsed, onToggle, currentPage, onPageChange }) {
                   className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-200
                     ${
                       isActive
-                        ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25"
+                        ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
                         : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/50"
                     }`}
                 >
                   <div className="flex items-center gap-3">
                     <item.icon className="w-5 h-5" />
-
                     {!collapsed && (
                       <span className="font-medium">{item.label}</span>
-                    )}
-
-                    {!collapsed && item.badge && (
-                      <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-red-500 text-white">
-                        {item.badge}
-                      </span>
-                    )}
-
-                    {!collapsed && item.count && (
-                      <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
-                        {item.count}
-                      </span>
                     )}
                   </div>
 
@@ -183,7 +148,7 @@ function Sidebar({ collapsed, onToggle, currentPage, onPageChange }) {
                     {item.submenu.map((sub) => (
                       <button
                         key={sub.id}
-                        onClick={() => onPageChange(sub.id)}
+                        onClick={() => handleSubmenuClick(sub.id)}
                         className={`block w-full text-left px-3 py-2 text-sm rounded-lg transition
                           ${
                             currentPage === sub.id
