@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   LayoutDashboard,
   Zap,
@@ -18,7 +19,6 @@ const menuItems = [
     id: "dashboard",
     icon: LayoutDashboard,
     label: "Dashboard",
-    active: true,
     badge: "New",
   },
   {
@@ -28,7 +28,7 @@ const menuItems = [
     submenu: [
       { id: "overview", label: "Overview" },
       { id: "reports", label: "Reports" },
-      { id: "insights", label: "Insighnts" },
+      { id: "insights", label: "Insights" },
     ],
   },
   {
@@ -85,78 +85,144 @@ const menuItems = [
     label: "Settings",
   },
 ];
-function Sidebar() {
+
+function Sidebar({ collapsed, onToggle, currentPage, onPageChange }) {
+  const [openMenu, setOpenMenu] = useState(null);
+
+  const handleMenuClick = (item) => {
+    if (item.submenu) {
+      setOpenMenu(openMenu === item.id ? null : item.id);
+    } else {
+      onPageChange(item.id);
+      setOpenMenu(null);
+    }
+  };
+
   return (
-    <div className="w-72 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200/50 dark:border-slate-700/50 flex flex-col relative z-10">
+    <aside
+      className={`${
+        collapsed ? "w-20" : "w-72"
+      } transition-all duration-300 ease-in-out
+      bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl
+      border-r border-slate-200/50 dark:border-slate-700/50
+      flex flex-col`}
+    >
       {/* HEADER */}
       <div className="p-6 border-b border-slate-200/50 dark:border-slate-700/50">
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
             <Zap className="w-6 h-6 text-white" />
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-800 dark:text-white">
-              Nexus
-            </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Admin Panel
-            </p>
-          </div>
+
+          {!collapsed && (
+            <div>
+              <h1 className="text-xl font-bold text-slate-800 dark:text-white">
+                Nexus
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Admin Panel
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* NAV (MENU AREA) */}
+      {/* NAVIGATION */}
       <nav className="flex-1 p-4 overflow-y-auto">
-        {menuItems.map((item) => {
-          return (
-            <diV key={item.id}>
-              <button
-                className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-200`}
-              >
-                <div className="flex items-center space-x-3">
-                  <item.icon className={`w-5 h-5`} />
-                  <>
-                    <span className="font-medium ml-2">{item.label}</span>
-                    {item.badge && (
-                      <span className="px-2 py-1 text-xs bg-red-500 text-white- rounded-full">
+        <div className="space-y-1">
+          {menuItems.map((item) => {
+            const isActive =
+              currentPage === item.id ||
+              (item.submenu && item.submenu.some((s) => s.id === currentPage));
+
+            const isOpen = openMenu === item.id;
+
+            return (
+              <div key={item.id}>
+                <button
+                  onClick={() => handleMenuClick(item)}
+                  className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-200
+                    ${
+                      isActive
+                        ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/25"
+                        : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/50"
+                    }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon className="w-5 h-5" />
+
+                    {!collapsed && (
+                      <span className="font-medium">{item.label}</span>
+                    )}
+
+                    {!collapsed && item.badge && (
+                      <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-red-500 text-white">
                         {item.badge}
                       </span>
                     )}
-                    {item.count && (
-                      <span className="px-2 py-1 text-xs bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full">
+
+                    {!collapsed && item.count && (
+                      <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
                         {item.count}
                       </span>
                     )}
-                  </>
-                </div>
-                {item.submenu && (
-                  <ChevronDown className="w-4 h-4 transition-transform" />
+                  </div>
+
+                  {!collapsed && item.submenu && (
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform ${
+                        isOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  )}
+                </button>
+
+                {/* SUBMENU */}
+                {!collapsed && item.submenu && isOpen && (
+                  <div className="ml-10 mt-1 space-y-1">
+                    {item.submenu.map((sub) => (
+                      <button
+                        key={sub.id}
+                        onClick={() => onPageChange(sub.id)}
+                        className={`block w-full text-left px-3 py-2 text-sm rounded-lg transition
+                          ${
+                            currentPage === sub.id
+                              ? "bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white"
+                              : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                          }`}
+                      >
+                        {sub.label}
+                      </button>
+                    ))}
+                  </div>
                 )}
-              </button>
-            </diV>
-          );
-        })}
+              </div>
+            );
+          })}
+        </div>
       </nav>
 
-      {/* USER PROFILE (BOTTOM) */}
-      <div className="p-4 border-t border-slate-200/50 dark:border-slate-700/50 mt-auto">
-        <div className="flex items-center space-x-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
+      {/* USER PROFILE */}
+      <div className="p-4 border-t border-slate-200/50 dark:border-slate-700/50">
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
           <img
             src="https://i.pravatar.cc/100"
             alt="user"
             className="w-10 h-10 rounded-full ring-2 ring-blue-500"
           />
-          <div>
-            <p className="text-sm font-medium text-slate-800 dark:text-white">
-              Alex Johnson
-            </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Administrator
-            </p>
-          </div>
+          {!collapsed && (
+            <div>
+              <p className="text-sm font-medium text-slate-800 dark:text-white">
+                Alex Johnson
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Administrator
+              </p>
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </aside>
   );
 }
 
