@@ -1,3 +1,4 @@
+import Dashboard from "./components/Dashboard/Dashboard";
 import Header from "./components/Layout/Header";
 import Sidebar from "./components/Layout/Sidebar";
 import React, { useState } from "react";
@@ -16,6 +17,11 @@ function App() {
 
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header onToggle={() => setSideBarCollapsed(!sideBarCollapsed)} />
+          <main className="flex-1 overflow-y-auto bg-transparent">
+            <div className="p-6 space-y-6">
+              {currentPage === "dashboard" && <Dashboard />}
+            </div>
+          </main>
         </div>
       </div>
     </div>
