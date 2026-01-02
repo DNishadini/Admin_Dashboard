@@ -1,5 +1,4 @@
 import {
-  ArrowDown,
   ArrowDownRight,
   ArrowUpRight,
   DollarSign,
@@ -50,6 +49,13 @@ const stats = [
     textColor: "text-orange-600 dark:text-orange-400",
   },
 ];
+const gradientMap = {
+  "Total Revenue": "from-emerald-500 to-teal-600",
+  "Active Users": "from-blue-500 to-indigo-600",
+  "Total Orders": "from-purple-500 to-pink-600",
+  "Page Views": "from-orange-500 to-red-600",
+};
+
 function StatsGrid() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 ">
@@ -86,15 +92,18 @@ function StatsGrid() {
                 </div>
               </div>
               <div
-                className={`p-3 rounded-xl ${stats.bgColor}group-hover:scale-110 transition-all duration-300`}
+                className={`p-3 rounded-xl ${stats.bgColor} group-hover:scale-110 transition-all duration-300`}
               >
                 {<stats.icon className={`w-6 h-6 ${stats.textColor}`} />}
               </div>
             </div>
             {/* Progressbar */}
-            <div className="mt-4 h2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+            <div className="mt-4 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
               <div
-                className={`w-full bg-gradient-to-r rounded-full transition-all duration-100`}
+                className={`h-2 w-full bg-gradient-to-r ${
+                  gradientMap[stats.title]
+                } rounded-full transition-all duration-100`}
+                style={{ width: stats.trend === "up" ? "75%" : "45%" }}
               ></div>
             </div>
           </div>
